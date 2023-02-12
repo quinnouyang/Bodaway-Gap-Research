@@ -1,0 +1,17 @@
+# Python Stuff
+.ipynb_checkpoints
+__pycache__
+
+# Outputs and Sensitive Data
+Edited\ Recording\ Transcriptions/
+*.txt
+*.csv
+*.xlsx
+*.json
+*.png
+*.pdf
+*.html
+
+# Miscellaneous
+config.py
+.DS_Store
