@@ -1,0 +1,170 @@
+\documentclass{article}
+
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{urlcolor=[RGB]{0,0,180}} % A darker blue than the default
+
+\title{Water Dynamics Notes}
+\author{Quinn Ouyang}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{\href{https://doi.org/10.1016/j.agwat.2014.10.008}{Reca, et al.: Optimal pumping scheduling model considering reservoir evaporation}}
+
+\subsection{Previous Work}
+
+\begin{itemize}
+    \item Evaporation losses
+    \item Cover reservoirs to prevent evaporation; costly for large ones
+    \item Optimizing energy costs of pumping schedules, not considering evaporation
+\end{itemize}
+
+\subsection{Methodology}
+
+Linear function for surface area $A$ to volume $S$: $A = c_1 \times S + c_2$
+
+Pan evaporation $E_{o}$ tends to be proportionally higher reservoir evaporation .$E_d$
+\begin{itemize}
+    \item $E_d = K_{r, d} \times E_{o,d}, K_{r, d} >1$ for day $d$
+    \item This requires “daily evaporation estimations into an hourly basis,” which is highly variable as it depends more on wind speed than radiation.
+\end{itemize}
+
+\subsection{LP Optimization}
+
+\subsubsection{Objective Function}
+
+Optimize total cost $C_e$, given energy price $p$ and consumption $W$ at time period $i$
+
+\begin{itemize}
+    \item $C_e = \sum p_i \times W_i$
+    \item $W_i = w_i \times V_i$ for unitary consumption $w$ and volume pumped $V$ at time period $i$
+    \item Also can include unitary water cost $p_w$
+\end{itemize}
+
+\subsubsection{Constraints}
+
+\begin{itemize}
+    \item Max pumping capacity: $V_i \leq Q \times N_i, \forall i$ for system discharge rate $Q$ and duration $N$ at period $i$
+    \item Max/min storage capacity
+    \item $S_i \in [S_m, S_M], \forall i$ where $S_i = S_{i-1} + V_i + R_i - D_i - RE_i$ for demand $D$, rainfall $R$, and evaporation $RE$ at period $i$
+    \item Non-negativity
+\end{itemize}
+
+\subsection{Case Study}
+
+Instead of pumping water out from reservoirs, this is pumping water from wells into reservoirs, where evaporation will be more of an issue.
+
+\begin{itemize}
+    \item Given: area-volume measurements, pumping discharge etc., demand, electricity rates
+    \item Measured: evaporation data (via A-class pan and weather station)
+    \item Approximated hourly evaporation patterns with nearby data
+\end{itemize}
+
+\subsection{Results}
+
+\begin{itemize}
+    \item Two models: control (without considering evaporation), above methodology
+    \item For control, model anticipated pumping hours by maximizing low cost pumping periods
+    \item For methodology, model delayed pumping to minimize stored water pumped into reservoirs
+\end{itemize}
+
+\newpage
+
+\section{\href{https://deepcreekanswers.com/deepcreekscience/documents/evaporation/Penpan.pdf}{Linacre: Estimating U.S. Class A Pan Evaporation from Few Climate Data}}
+
+\subsection{Previous Work}
+
+\begin{itemize}
+    \item Comparing variable pan measurements with \href{https://en.wikipedia.org/wiki/Penman_equation}{Penman’s equation}
+    \item Formula requires temperature, humidity, wind, and irradiance measurements
+    \item Lots of pan data, few lake-evaporation measurements to verify Penman’s
+\end{itemize}
+
+Purpose is to modify Penman’s equation for a pan to verify its results
+
+\subsection{Methodology}
+
+\subsubsection{Pan}
+
+\begin{itemize}
+    \item Wire mesh screen reduces wind and radiation, lowering evaporation
+    \item Higher elevations has thinner air, reducing radiation intensity for higher pans
+    \item Heat transfer through pan walls, depending on solar irradiance of the ground and sun elevation
+    \item Dryer ground increases evaporation
+\end{itemize}
+
+\subsubsection{Modified Equation}
+
+Similar to that for a leaf because water loss resistance > heat transfer resistance (?)
+
+\subsubsection{Conclusions}
+
+\begin{itemize}
+    \item $E_o = 0.77$
+    \item $E_p$ depends on solar irradiance (pan geometry, solar positioning, atmosphere)
+    \item Modified equation is more reliable than Penman’s, involving “extraterretrial radiation and rainfall measurements”
+\end{itemize}
+
+\newpage
+
+\section{\href{https://ieeexplore.ieee.org/document/8535643}{Ngancha et al.: Optimal Pump Scheduling … Incorporating Evaporation and Seepage Effect}}
+
+\subsection{Previous Work}
+
+Studies at different levels: water storage, pumping, and cost optimization
+
+\subsection{Case Study}
+
+\begin{itemize}
+    \item Water treatment system: river water to dams to reservoirs for treatment
+    \item Goal: minimize electricity and water costs while satisfying demand and considering evaporation
+\end{itemize}
+
+\newpage
+
+\section{\href{https://link.springer.com/article/10.1007/s11269-008-9303-3}{Sivapragasam, et al.: Modeling Evaporation-Seepage Losses …}}
+
+\subsection{Previous Work}
+
+\begin{itemize}
+    \item Most research model non-evaporation losses, esp. seepage, as a pre-defined relationship or as negligible
+    \item Penman most commonly used for evaporation modeling, with possible some under-estimation
+\end{itemize}
+
+\subsection{Methodology}
+
+\begin{itemize}
+    \item GP algorithm
+          \begin{itemize}
+              \item Evaporation: meteorological parameters + surface area (volume / depth)
+                    \begin{itemize}
+                        \item $E_t = f(h_{t-1}, SA_{t-1}, T_{t_24}, RH_{t-24}, N_{t-24}, V_{t-24})$
+                        \item Evaporation(-seepage?) loss $E$, temperature $T$, wind velocity $V$, sunshine hours $N$, relative humidity $RH$, surface area $SA$, and depth $h$ at time $t$
+                        \item $t-1$ indicates one fortnight before and $t-24$ indicates the same fortnight one year before
+                        \item inflow not explicitly considered because assume depth accounts for that ($h$ also indirectly accounts for $SA$ as they have a linear relationship)
+                    \end{itemize}
+          \end{itemize}
+    \item Seepage: depth (lack of other info, e.g. saturation)
+          - Assumption: average climate in a given year is not significantly different from the year before
+          - Develop GP equations for both reservoirs in case study, compare to Penman’s
+\end{itemize}
+
+\subsection{Conclusions}
+
+\begin{itemize}
+    \item GP and Penman’s corr coe. is $0.85$ vs. $0.64$, GP model better for March through July, indicating some losses in those months that are beyond evaporation. i.e. models predict evaporation very similarly, but GP performs better by including non-evaporation modeling
+    \item Unsatisfactory predictions from both models because of data frequency and station distance (?)
+\end{itemize}
+
+\newpage
+
+\section{Other Sources}
+
+\begin{itemize}
+    \item \href{https://core.ac.uk/download/pdf/270268124.pdf}{Small reservoirs depth-area-volume relationships …}
+    \item \href{https://www.sciencedirect.com/science/article/pii/S1876610212001968?fr=RR-1&ref=cra_js_challenge}{Establishing Water Surface Area-Storage Capacity Relationship …}
+\end{itemize}
+
+\end{document}

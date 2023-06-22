@@ -1,10 +1,12 @@
 # Python Stuff
 .ipynb_checkpoints
 __pycache__
+.python-version
 
 # Outputs and Sensitive Data
 Edited\ Recording\ Transcriptions/
 *.txt
+!requirements.txt
 *.csv
 *.xlsx
 *.json
@@ -15,3 +17,7 @@ Edited\ Recording\ Transcriptions/
 # Miscellaneous
 config.py
 .DS_Store
+
+# dynamics_model Latex notes
+Water\ Optimization/dynamics_model/out/
+!Water\ Optimization/dynamics_model/out/notes.pdf
