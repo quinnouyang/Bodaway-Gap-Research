@@ -13,6 +13,7 @@ Edited\ Recording\ Transcriptions/
 *.png
 *.pdf
 *.html
+*.geojson
 
 # Miscellaneous
 config.py
