@@ -4,6 +4,7 @@ __pycache__
 .python-version
 
 # Outputs and Sensitive Data
+Water\ Optimization/travel_analysis/config.py
 Edited\ Recording\ Transcriptions/
 *.txt
 !requirements.txt
@@ -16,9 +17,15 @@ Edited\ Recording\ Transcriptions/
 *.geojson
 
 # Miscellaneous
-config.py
-.DS_Store
+**/.DS_Store
 
-# dynamics_model Latex notes
-Water\ Optimization/dynamics_model/out/
-!Water\ Optimization/dynamics_model/out/notes.pdf
+# LaTeX: Files from custom build config (except PDFs)
+**/*.aux
+**/*.fdb_latex
+**/*.fls
+**/*.log
+**/*.out
+**/*.synctex.gz
+**/aux
+**/out/*
+!**/out/*.pdf
