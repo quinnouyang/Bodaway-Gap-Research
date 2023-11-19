@@ -1,20 +1,19 @@
 # Python Stuff
-.ipynb_checkpoints
-__pycache__
-.python-version
+**/.ipynb_checkpoints
+**/__pycache__
+**/.python-version
 
 # Outputs and Sensitive Data
-Water\ Optimization/travel_analysis/config.py
-Edited\ Recording\ Transcriptions/
-*.txt
+**/config.py
+**/*.txt
 !requirements.txt
-*.csv
-*.xlsx
-*.json
-*.png
-*.pdf
-*.html
-*.geojson
+**/*.csv
+**/*.xlsx
+**/*.json
+**/*.png
+**/*.pdf
+**/*.html
+**/*.geojson
 
 # Miscellaneous
 **/.DS_Store
