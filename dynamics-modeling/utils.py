@@ -5,6 +5,21 @@ from typing import Literal
 from scipy.optimize import curve_fit
 
 
+def power_law_volume_area(area: float, c1: float, c2: float, mu=1e-6) -> float:
+    """
+    Estimates volume from area using a power-law relationship.
+    To avoid non-differentiablity when `area = 0`, offsets area by `mu` in calculation.
+    """
+    return c1 * (mu + area) ** c2
+
+
+def linear_volume_area(area: float, max_area: float, max_volume) -> float:
+    """
+    Estimates volume from area using a linear relationship.
+    """
+    return max_volume / max_area * area
+
+
 def load_mesonet(path: str, debug=False) -> pd.DataFrame:
     df = pd.read_csv(
         path,
