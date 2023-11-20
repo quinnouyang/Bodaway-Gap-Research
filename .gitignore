@@ -6,7 +6,7 @@
 # Outputs and Sensitive Data
 **/config.py
 **/*.txt
-!requirements.txt
+!*requirements.txt
 **/*.csv
 **/*.xlsx
 **/*.json
