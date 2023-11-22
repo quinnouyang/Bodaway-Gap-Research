@@ -7,7 +7,7 @@ from pyomo.environ import (
     Constraint,
 )
 from pyomo.core import NonNegativeReals, Reals  # type: ignore
-from utils import power_law_volume_area, linear_volume_area
+from dynamics_modeling.utils import power_law_volume_area, linear_volume_area
 from typing import Any
 from contextlib import suppress
 
@@ -102,7 +102,7 @@ class ReservoirModel:
         self._solver = solver if isinstance(solver, Solver) else Solver(solver)
 
         self._is_linear = is_linear
-        self._num_points = precip_rate.size  # TODO: Shouldn't this be `_num_periods`?
+        self._N_POINTS = precip_rate.size  # TODO: Shouldn't this be `_num_periods`?
         self._g1 = g1
         self._g2 = g2
         self._Ac = catchment_area
