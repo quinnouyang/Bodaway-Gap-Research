@@ -5,7 +5,7 @@ from typing import Literal
 from scipy.optimize import curve_fit
 
 
-def power_law_volume_area(area: float, c1: float, c2: float, mu=1e-6) -> float:
+def power_law_area_to_volume(area: float, c1: float, c2: float, mu=1e-8) -> float:
     """
     Estimates volume from area using a power-law relationship.
     To avoid non-differentiablity when `area = 0`, offsets area by `mu` in calculation.
@@ -13,7 +13,7 @@ def power_law_volume_area(area: float, c1: float, c2: float, mu=1e-6) -> float:
     return c1 * (mu + area) ** c2
 
 
-def linear_volume_area(area: float, max_area: float, max_volume) -> float:
+def linear_area_to_volume(area: float, max_area: float, max_volume) -> float:
     """
     Estimates volume from area using a linear relationship.
     """
