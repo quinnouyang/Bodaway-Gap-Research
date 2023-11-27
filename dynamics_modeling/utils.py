@@ -20,16 +20,21 @@ def linear_area_to_volume(area: float, max_area: float, max_volume) -> float:
     return max_volume / max_area * area
 
 
-def load_mesonet(path: str, debug=False) -> pd.DataFrame:
+def load_hourly_mesonet(path: str) -> pd.DataFrame:
+    """
+    Parses a CSV of [hourly observations from the Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu/request/download.phtml).
+    Filters to precipitation, standardizing to metric units. Drops rows with any `NaN` values.
+    """
+
     df = pd.read_csv(
         path,
-        usecols=["valid", "tmpf", "dwpf", "sknt", "p01i"],
+        usecols=["valid", "p01i"],
         header=0,
         dtype={
             "valid": "string",  # Datetime. Consider "datetime64[ns, UTC]"
-            "tmpf": "Float32",  # Temperature (°F)
-            "dwpf": "Float32",  # Dewpoint (°F)
-            "sknt": "Float32",  # Wind speed (knots)
+            # "tmpf": "Float32",  # Temperature (°F)
+            # "dwpf": "Float32",  # Dewpoint (°F)
+            # "sknt": "Float32",  # Wind speed (knots)
             "p01i": "Float32",  # Precipitation in last hr (mm)
         },
     )
@@ -38,13 +43,40 @@ def load_mesonet(path: str, debug=False) -> pd.DataFrame:
     df["valid"] = df["valid"].dt.tz_localize(None)  # Remove timezone information
     df = df.convert_dtypes()
 
-    df = df.dropna()
-    df["tmpc"] = df["tmpf"].apply(f_to_c)
-    df["dwpc"] = df["dwpf"].apply(f_to_c)
-    df["smps"] = df["sknt"].apply(knots_to_mps)
+    df.dropna(inplace=True)
 
-    if debug:
-        print(df.describe())
+    # df["tmpc"] = df["tmpf"].apply(f_to_c)
+    # df["dwpc"] = df["dwpf"].apply(f_to_c)
+    # df["smps"] = df["sknt"].apply(knots_to_mps)
+
+    return df
+
+
+def load_daily_mesonet(path: str) -> pd.DataFrame:
+    """
+    Parses a CSV of [daily observations from the Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu/request/daily.phtml).
+    Filters to precipitation, standardizing to metric units. Drops rows with any `NaN` values.
+    """
+
+    df = pd.read_csv(
+        path,
+        usecols=["day", "precip_in"],
+        header=0,
+        dtype={
+            "day": "string",
+            "p01i": "Float32",  # (in)
+        },
+        parse_dates=["day"],
+    )
+
+    df["day"] = pd.to_datetime(df["day"], utc=True)
+    df["day"] = df["day"].dt.tz_localize(None)  # Remove timezone information
+    df = df.convert_dtypes()
+
+    df.dropna(inplace=True)
+
+    df["precip_in"] = df["precip_in"].apply(lambda i: i * 0.0254)  # (in -> m)
+    df.rename(columns={"day": "time", "precip_in": "precip"}, inplace=True)
 
     return df
 
