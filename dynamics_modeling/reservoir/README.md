@@ -52,3 +52,16 @@ $$
     &= \frac{w_u + |w_u|}2
 \end{align*}
 $$
+
+## Reservoir Information
+
+We model a particular reservoir in the region of the Bodaway Gap chapter.
+
+- Name: Curve Reservoir
+- Coordinates: $36.33385606273248, -111.6578894846542$
+- Maximum surface area: $21,085$ m
+- Catchment area: $1.6 \cdot 10^7$ m^2
+- $c_1$: $1.4534$
+- $c_2$: $1.1919$
+- Pan evaporation coefficient: $0.8$
+- Catchment infilitration coefficient: $0.3$
