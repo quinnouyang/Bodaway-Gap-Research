@@ -1,3 +1,7 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import scienceplots as _
+
 from pyomo.environ import (
     SolverFactory,
     ConcreteModel,
@@ -6,19 +10,13 @@ from pyomo.environ import (
     Objective,
     Constraint,
 )
-from pyomo.core import NonNegativeReals, Reals  # type: ignore
-from dynamics_modeling.utils import power_law_volume_area, linear_volume_area
+from pyomo.core import NonNegativeReals  # type: ignore
+from dynamics_modeling.utils import power_law_area_to_volume, linear_area_to_volume
 from typing import Any
 from contextlib import suppress
 
-import numpy as np
-import matplotlib.pyplot as plt
-import scienceplots as _
-
 plt.style.use("ieee")
 
-PAN_EVAP_COEFF = 0.8
-INFILITRATION_COEFF = 0.3
 WIDTH = 0.25
 
 
@@ -57,9 +55,11 @@ class ReservoirModel:
         g2: float,
         catchment_area: float,
         max_area: float,
+        max_pump_rate: float,
         precip_rate: np.ndarray,
         pan_evap_rate: np.ndarray,
-        max_pump_rate=0,
+        evap_coeff=0.8,
+        infil_coeff=0.3,
         is_linear=True,
     ) -> None:
         """
@@ -77,12 +77,16 @@ class ReservoirModel:
             Catchment surface area (`A_c`).
         `max_area` : `float`
             Maximum surface area (`A`).
+        `max_pump_rate` : `float`, optional
+            Maximum pumping rate (`Q`), by default `0`.
         `precip_rate` : `np.ndarray`
             1D-array of the precipitation rate over each period (same shape as `pan_evap_rate`).
         `pan_evap_rate` : `np.ndarray`
             1D-array of the pan evaporation rate over each period (same shape as `precip_rate`).
-        `max_pump_rate` : `float`, optional
-            Maximum pumping rate (`Q`), by default `0`.
+        `evap_coeff` : `float`, optional
+            Coefficient for the pan evaporation rate (`C_p`), by default `0.8`.
+        `infil_coeff` : `float`, optional
+            Coefficient for the infiltration rate (`C_i`), by default `0.3`.
         `is_linear` : `bool`, optional
             Determines whether to model with only linear formulas or not (e.g. linear or power-law volume-area relationship), by default `True`.
         """
@@ -102,15 +106,15 @@ class ReservoirModel:
         self._solver = solver if isinstance(solver, Solver) else Solver(solver)
 
         self._is_linear = is_linear
-        self._N_POINTS = precip_rate.size  # TODO: Shouldn't this be `_num_periods`?
+        self._num_points = precip_rate.size  # TODO: Shouldn't this be `_num_periods`?
         self._g1 = g1
         self._g2 = g2
         self._Ac = catchment_area
         self._A = max_area
         self._S = self._est_volume(self._A)  # Maximum storage volume
         self._Q = max_pump_rate
-        self._Cp = PAN_EVAP_COEFF
-        self._Ci = INFILITRATION_COEFF
+        self._Cp = evap_coeff
+        self._Ci = infil_coeff
 
         self._p = precip_rate
         self._ep = pan_evap_rate
@@ -123,16 +127,16 @@ class ReservoirModel:
     def _est_volume(self, area: float) -> float:
         """
         Estimates volume from area, depending on `ReservoirModel._is_linear`.
-         - `utils.power_law_volume_area`
-         - `utils.linear_volume_area`
+         - `utils.power_law_area_to_volume`
+         - `utils.linear_area_to_volume`
 
         If `ReservoirModel._S` does not exist, defaults to the power-law formula (usually to estimate `ReservoirModel._S` first, regardless of `ReservoirModel._is_linear`).
         """
         if self._is_linear:
             with suppress(AttributeError):
-                return linear_volume_area(area, self._A, self._S)
+                return linear_area_to_volume(area, self._A, self._S)
 
-        return power_law_volume_area(area, self._g1, self._g2)
+        return power_law_area_to_volume(area, self._g1, self._g2)
 
     def _construct_vars(self) -> None:
         assert (model := self._model), "`ConcreteModel` not initialized"
