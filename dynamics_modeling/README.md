@@ -58,7 +58,7 @@ $$
 We model a particular reservoir in the region of the Bodaway Gap chapter.
 
 - Name: Curve Reservoir
-- Coordinates: $36.33385606273248, -111.6578894846542$
+- Coordinates: $36.33385606273248, -111.6578894846542$ or $36° 20' 1.881", 111° 39' 28.3998"$
 - Maximum surface area: $21,085$ m
 - Catchment area: $1.6 \cdot 10^7$ m^2
 - $c_1$: $1.4534$
